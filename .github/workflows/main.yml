@@ -37,7 +37,7 @@ jobs:
         echo ::set-output name=SIMULATOR_DIR::${{ steps.root.outputs.ROOT_DIR }}/simulator/
         echo ::set-output name=OUTPUT_DIR::${{ steps.root.outputs.ROOT_DIR }}/dist/
         # echo ::set-output name=HBUILDER_IOS_SDK_LIB_DIR::${{ steps.root.outputs.ASSERTS_DIR }}/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/SDK/inc
-        echo ::set-output name=HBUILDER_IOS_SDK_LIB_DIR::${{ steps.root.outputs.ASSERTS_DIR }}/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/SDK/
+        echo ::set-output name=HBUILDER_IOS_SDK_LIB_DIR::${{ steps.root.outputs.ASSERTS_DIR }}/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/SDK
     - name: New Folder
       run: mkdir ${{ steps.variables.outputs.DEVICE_DIR }} ${{ steps.variables.outputs.SIMULATOR_DIR }} ${{ steps.variables.outputs.OUTPUT_DIR }}
 
@@ -52,7 +52,6 @@ jobs:
 
     - name: Build
       run: |
-        pwd
         cd ${{ steps.root.outputs.ROOT_DIR }}
         cp -a ${{ steps.variables.outputs.HBUILDER_IOS_SDK_LIB_DIR }} ${{ steps.root.outputs.SDK_DIR }}
         ls -al ${{ steps.root.outputs.SDK_DIR }}

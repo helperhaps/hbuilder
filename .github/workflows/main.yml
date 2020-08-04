@@ -41,7 +41,7 @@ jobs:
       run: |
         cd ${{ steps.root.outputs.ASSERTS_DIR }}
         ls -al
-        md5 -r s${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}.zip
+        md5 -r ${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}.zip
         unzip ${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}.zip
     - name: Force XCode 11.3
       run: sudo xcode-select -switch /Applications/Xcode_11.6.app

@@ -1,0 +1,55 @@
+# This is a basic workflow to help you get started with Actions
+
+name: build ios release
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the jg branch
+on:
+  push:
+    branches: [ jg ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: macOS-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - name: root
+      id: root
+      run: |
+        echo ::set-output name=ROOT::`pwd`/UniPlugin-JVerification-iOS/HBuilder-uniPluginDemo/UniPluginJVerification/
+        echo ::set-output name=FRAMEWORK_NAME::UniPluginJVerification
+        echo ::set-output name=PROJECTNAME::HBuilder-uniPlugin
+        echo ::set-output name=HBUILDER_IOS_SDK_NAME::iOSSDK@2.7.9.80164_20200527
+    - name: Set variables
+      id: variables
+      run: |
+        echo ::set-output name=DEVICE_DIR::${{ steps.root.outputs.ROOT }}device/
+        echo ::set-output name=SIMULATOR_DIR::${{ steps.root.outputs.ROOT }}simulator/
+        echo ::set-output name=OUTPUT_DIR::${{ steps.root.outputs.ROOT }}dist/
+        echo ::set-output name=HBUILDER_ASSERTS_DIR::${{ steps.root.outputs.ROOT }}assets/
+        echo ::set-output name=HBUILDER_IOS_SDK_LIB_DIR::${{ steps.root.outputs.ROOT }}assets/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/SDK/inc/**
+    - name: New Folder
+      run: mkdir ${{ steps.variables.outputs.DEVICE_DIR }} ${{ steps.variables.outputs.SIMULATOR_DIR }} ${{ steps.variables.outputs.OUTPUT_DIR }}
+
+    - name: Unzip Hbuilder SDK
+      run: |
+        cd ${{ steps.variables.outputs.HBUILDER_ASSERTS_DIR }}
+        unzip ${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}.zip
+    - name: Force XCode 11.3
+      run: sudo xcode-select -switch /Applications/Xcode_11.6.app
+
+    - name: Build
+      run: |
+        pwd
+        cd ${{ steps.root.outputs.ROOT }}
+        pwd
+        xcodebuild -scheme ${{ steps.root.outputs.FRAMEWORK_NAME }} HEADER_SEARCH_PATHS=${{ steps.variables.outputs.HBUILDER_IOS_SDK_LIB_DIR }} ONLY_ACTIVE_ARCH=NO OTHER_CFLAGS="-fembed-bitcode" -configuration 'Release' -sdk iphoneos clean build TARGET_BUILD_DIR=${{ steps.variables.outputs.DEVICE_DIR }}
+        ls -al ${{ steps.variables.outputs.DEVICE_DIR }}
+        ls -al ${{ steps.variables.outputs.SIMULATOR_DIR }}
+        ls -al ${{ steps.variables.outputs.OUTPUT_DIR }}

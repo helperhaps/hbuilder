@@ -24,6 +24,7 @@ jobs:
     - name: root
       id: root
       run: |
+        echo ::set-output name=SDK_DIR::`pwd`/UniPlugin-JVerification-iOS/HBuilder-uniPluginDemo
         echo ::set-output name=ROOT_DIR::`pwd`/UniPlugin-JVerification-iOS/HBuilder-uniPluginDemo/UniPluginJVerification
         echo ::set-output name=ASSERTS_DIR::`pwd`/assets
         echo ::set-output name=FRAMEWORK_NAME::UniPluginJVerification
@@ -35,7 +36,8 @@ jobs:
         echo ::set-output name=DEVICE_DIR::${{ steps.root.outputs.ROOT_DIR }}/device/
         echo ::set-output name=SIMULATOR_DIR::${{ steps.root.outputs.ROOT_DIR }}/simulator/
         echo ::set-output name=OUTPUT_DIR::${{ steps.root.outputs.ROOT_DIR }}/dist/
-        echo ::set-output name=HBUILDER_IOS_SDK_LIB_DIR::${{ steps.root.outputs.ASSERTS_DIR }}/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/SDK/inc
+        # echo ::set-output name=HBUILDER_IOS_SDK_LIB_DIR::${{ steps.root.outputs.ASSERTS_DIR }}/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/SDK/inc
+        echo ::set-output name=HBUILDER_IOS_SDK_LIB_DIR::${{ steps.root.outputs.ASSERTS_DIR }}/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/SDK/
     - name: New Folder
       run: mkdir ${{ steps.variables.outputs.DEVICE_DIR }} ${{ steps.variables.outputs.SIMULATOR_DIR }} ${{ steps.variables.outputs.OUTPUT_DIR }}
 
@@ -52,8 +54,9 @@ jobs:
       run: |
         pwd
         cd ${{ steps.root.outputs.ROOT_DIR }}
-        pwd
-        xcodebuild -scheme ${{ steps.root.outputs.FRAMEWORK_NAME }} HEADER_SEARCH_PATHS=${{ steps.variables.outputs.HBUILDER_IOS_SDK_LIB_DIR }} ONLY_ACTIVE_ARCH=NO OTHER_CFLAGS="-fembed-bitcode" -configuration 'Release' -sdk iphoneos clean build TARGET_BUILD_DIR=${{ steps.variables.outputs.DEVICE_DIR }}
+        cp ${{ steps.variables.outputs.HBUILDER_IOS_SDK_LIB_DIR }} ${{ steps.root.outputs.SDK_DIR }} 
+        # xcodebuild -scheme ${{ steps.root.outputs.FRAMEWORK_NAME }} HEADER_SEARCH_PATHS=${{ steps.variables.outputs.HBUILDER_IOS_SDK_LIB_DIR }} ONLY_ACTIVE_ARCH=NO OTHER_CFLAGS="-fembed-bitcode" -configuration 'Release' -sdk iphoneos clean build TARGET_BUILD_DIR=${{ steps.variables.outputs.DEVICE_DIR }}
+        xcodebuild -scheme ${{ steps.root.outputs.FRAMEWORK_NAME }} ONLY_ACTIVE_ARCH=NO OTHER_CFLAGS="-fembed-bitcode" -configuration 'Release' -sdk iphoneos clean build TARGET_BUILD_DIR=${{ steps.variables.outputs.DEVICE_DIR }}
         ls -al ${{ steps.variables.outputs.DEVICE_DIR }}
         ls -al ${{ steps.variables.outputs.SIMULATOR_DIR }}
         ls -al ${{ steps.variables.outputs.OUTPUT_DIR }}

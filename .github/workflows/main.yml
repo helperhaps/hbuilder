@@ -51,10 +51,10 @@ jobs:
     - name: New Folder
       run: mkdir ${{ steps.dir.outputs.BUILD_DIR }}
 
-    - name: Unzip Hbuilder SDK
-      run: |
-        cd ${{ steps.variables.outputs.ASSERTS_DIR }}
-        unzip ${{ steps.variables.outputs.HBUILDER_IOS_SDK_NAME }}.zip
+    # - name: Unzip Hbuilder SDK
+    #   run: |
+    #     cd ${{ steps.variables.outputs.ASSERTS_DIR }}
+    #     unzip ${{ steps.variables.outputs.HBUILDER_IOS_SDK_NAME }}.zip
 
     - name: Force XCode 11.3
       run: sudo xcode-select -switch /Applications/Xcode_11.6.app

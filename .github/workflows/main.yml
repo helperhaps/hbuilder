@@ -17,10 +17,22 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Create LFS file list
+      run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+    - name: Restore LFS cache
+      uses: actions/cache@v2
+      id: lfs-cache
       with:
-        lfs: true
+        path: .git/lfs
+        key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+
+    - name: Git LFS Pull
+      run: git lfs pull
+
     - name: variables
       id: variables
       run: |
@@ -34,11 +46,10 @@ jobs:
       id: dir
       run: |
         echo ::set-output name=BUILD_DIR::${{ steps.variables.outputs.WORK_DIR }}/build
-        echo ::set-output name=OUTPUT_DIR::${{ steps.variables.outputs.WORK_DIR }}/dist
-        # echo ::set-output name=HBUILDER_IOS_SDK_LIB_DIR::${{ steps.variables.outputs.ASSERTS_DIR }}/${{ steps.variables.outputs.HBUILDER_IOS_SDK_NAME }}/SDK/inc
         echo ::set-output name=HBUILDER_IOS_SDK_LIB_DIR::${{ steps.variables.outputs.ASSERTS_DIR }}/${{ steps.variables.outputs.HBUILDER_IOS_SDK_NAME }}/SDK
+
     - name: New Folder
-      run: mkdir ${{ steps.dir.outputs.BUILD_DIR }} ${{ steps.dir.outputs.OUTPUT_DIR }}
+      run: mkdir ${{ steps.dir.outputs.BUILD_DIR }}
 
     - name: Unzip Hbuilder SDK
       run: |

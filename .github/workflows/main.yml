@@ -20,18 +20,18 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Create LFS file list
-      run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+    # - name: Create LFS file list
+    #   run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
 
-    - name: Restore LFS cache
-      uses: actions/cache@v2
-      id: lfs-cache
-      with:
-        path: .git/lfs
-        key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+    # - name: Restore LFS cache
+    #   uses: actions/cache@v2
+    #   id: lfs-cache
+    #   with:
+    #     path: .git/lfs
+    #     key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
 
-    - name: Git LFS Pull
-      run: git lfs pull
+    # - name: Git LFS Pull
+    #   run: git lfs pull
 
     - name: variables
       id: variables
@@ -62,7 +62,7 @@ jobs:
     - name: xcodebuild
       run: |
         cd ${{ steps.variables.outputs.WORK_DIR }}
-        cp -a ${{ steps.dir.outputs.HBUILDER_IOS_SDK_LIB_DIR }} ${{ steps.variables.outputs.SDK_DIR }}
+        # cp -a ${{ steps.dir.outputs.HBUILDER_IOS_SDK_LIB_DIR }} ${{ steps.variables.outputs.SDK_DIR }}
         # xcodebuild -scheme ${{ steps.variables.outputs.FRAMEWORK_NAME }} HEADER_SEARCH_PATHS=${{ steps.dir.outputs.HBUILDER_IOS_SDK_LIB_DIR }} ONLY_ACTIVE_ARCH=NO OTHER_CFLAGS="-fembed-bitcode" -configuration 'Release' -sdk iphoneos clean build TARGET_BUILD_DIR=${{ steps.dir.outputs.BUILD_DIR }}
         xcodebuild -scheme ${{ steps.variables.outputs.FRAMEWORK_NAME }} ONLY_ACTIVE_ARCH=NO OTHER_CFLAGS="-fembed-bitcode" -configuration 'Release' -sdk iphoneos clean build TARGET_BUILD_DIR=${{ steps.dir.outputs.BUILD_DIR }}
         ls -al ${{ steps.dir.outputs.BUILD_DIR }} 

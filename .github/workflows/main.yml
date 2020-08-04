@@ -39,7 +39,7 @@ jobs:
 
     - name: Unzip Hbuilder SDK
       run: |
-        cd ${{ steps.variables.outputs.HBUILDER_ASSERTS_DIR }}
+        cd ${{ steps.root.outputs.HBUILDER_ASSERTS_DIR }}
         unzip ${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}.zip
     - name: Force XCode 11.3
       run: sudo xcode-select -switch /Applications/Xcode_11.6.app

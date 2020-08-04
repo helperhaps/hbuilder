@@ -23,7 +23,7 @@ jobs:
       id: root
       run: |
         echo ::set-output name=ROOT_DIR::`pwd`/UniPlugin-JVerification-iOS/HBuilder-uniPluginDemo/UniPluginJVerification
-        echo ::set-output name=HBUILDER_ASSERTS_DIR::`pwd`/assets
+        echo ::set-output name=ASSERTS_DIR::`pwd`/assets
         echo ::set-output name=FRAMEWORK_NAME::UniPluginJVerification
         echo ::set-output name=PROJECTNAME::HBuilder-uniPlugin
         echo ::set-output name=HBUILDER_IOS_SDK_NAME::iOSSDK@2.7.9.80164_20200527
@@ -33,13 +33,13 @@ jobs:
         echo ::set-output name=DEVICE_DIR::${{ steps.root.outputs.ROOT_DIR }}/device/
         echo ::set-output name=SIMULATOR_DIR::${{ steps.root.outputs.ROOT_DIR }}/simulator/
         echo ::set-output name=OUTPUT_DIR::${{ steps.root.outputs.ROOT_DIR }}/dist/
-        echo ::set-output name=HBUILDER_IOS_SDK_LIB_DIR::${{ steps.root.outputs.HBUILDER_ASSERTS_DIR }}/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/SDK/inc/**
+        echo ::set-output name=HBUILDER_IOS_SDK_LIB_DIR::${{ steps.root.outputs.ASSERTS_DIR }}/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}/SDK/inc/**
     - name: New Folder
       run: mkdir ${{ steps.variables.outputs.DEVICE_DIR }} ${{ steps.variables.outputs.SIMULATOR_DIR }} ${{ steps.variables.outputs.OUTPUT_DIR }}
 
     - name: Unzip Hbuilder SDK
       run: |
-        cd ${{ steps.root.outputs.HBUILDER_ASSERTS_DIR }}
+        cd ${{ steps.root.outputs.ASSERTS_DIR }}/
         unzip ${{ steps.root.outputs.HBUILDER_IOS_SDK_NAME }}.zip
     - name: Force XCode 11.3
       run: sudo xcode-select -switch /Applications/Xcode_11.6.app
@@ -47,7 +47,7 @@ jobs:
     - name: Build
       run: |
         pwd
-        cd ${{ steps.root.outputs.ROOT_DIR }}
+        cd ${{ steps.root.outputs.ROOT_DIR }}/
         pwd
         xcodebuild -scheme ${{ steps.root.outputs.FRAMEWORK_NAME }} HEADER_SEARCH_PATHS=${{ steps.variables.outputs.HBUILDER_IOS_SDK_LIB_DIR }} ONLY_ACTIVE_ARCH=NO OTHER_CFLAGS="-fembed-bitcode" -configuration 'Release' -sdk iphoneos clean build TARGET_BUILD_DIR=${{ steps.variables.outputs.DEVICE_DIR }}
         ls -al ${{ steps.variables.outputs.DEVICE_DIR }}

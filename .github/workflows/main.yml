@@ -24,7 +24,7 @@ jobs:
     - name: root
       id: root
       run: |
-        echo ::set-output name=SDK_DIR::`pwd`/UniPlugin-JVerification-iOS/HBuilder-uniPluginDemo
+        echo ::set-output name=SDK_DIR::`pwd`/UniPlugin-JVerification-iOS
         echo ::set-output name=ROOT_DIR::`pwd`/UniPlugin-JVerification-iOS/HBuilder-uniPluginDemo/UniPluginJVerification
         echo ::set-output name=ASSERTS_DIR::`pwd`/assets
         echo ::set-output name=FRAMEWORK_NAME::UniPluginJVerification
